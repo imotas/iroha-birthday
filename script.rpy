@@ -1,4 +1,4 @@
-﻿#gui文件为更改UI
+#gui文件为更改UI
 #options更改游戏基本设施
 #screen游戏界面设置
 #script为根目录
@@ -29,8 +29,11 @@ define h = Character("八幡")
 define l = Character("一色")
 define t = Character("小町")
 label start:
-    #Scene0 BG01a
+
+    scene gatemorning
+
     #这段感觉可以黑屏开局，然后在倒数第三局的时候背景渐变出背景一色的立绘
+    #imo:我设想的是，先展示总务高，然后跳出八幡的内心活动，会不会比黑屏好一点？
 
     h """(在策划惊喜时，最重要的是什么？)
 
@@ -47,6 +50,7 @@ label start:
         (因为关系亲密，在日常相处之中，微小的差异就可能产生不信任感。)"""
 
     show iroha11 at left#此处建议使用iroha09、11、12————猪脑过载
+    #imo:这里插入CG好一点，找一张一色经典图
         
     h """
         (尤其是，对于今天的惊喜派对的主角，一色彩羽。)
@@ -60,13 +64,14 @@ label start:
     #Act1 Scene1
     #BG03a
     #这里是回忆，可以加回忆滤镜（白雾就行）
+    #imo:或者边缘模糊
 
     scene activitymorning
 
-    #缺少小町立绘————猪脑过载
-
+    show komachi02
     t "给你一个艰巨而又伟大的任务。"
     h "我这种渺小又平庸的人做不了艰巨又伟大的任务。"
+    show komachi01
     t "哥哥不要贫嘴了，我们忙着给一色前辈准备惊喜呢。你要给我们争取时间，在我们准备完成之后把一色前辈带来活动室。"
     #BG05
 
