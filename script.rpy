@@ -1,4 +1,4 @@
-﻿#gui文件为更改UI
+#gui文件为更改UI
 #options更改游戏基本设施
 #screen游戏界面设置
 #script为根目录
@@ -49,12 +49,13 @@ label start:
 
         (因为关系亲密，在日常相处之中，微小的差异就可能产生不信任感。)"""
 
-    show iroha11 at left#此处建议使用iroha09、11、12————猪脑过载
+    #此处建议使用iroha09、11、12————猪脑过载
     #imo:这里插入CG好一点，找一张一色经典图
         
     h """
-        (尤其是，对于今天的惊喜派对的主角，一色彩羽。)
-
+        (尤其是，对于今天的惊喜派对的主角，一色彩羽。)"""
+    show cg04
+    h """
         (她是我们学校的学生会长，是足球部的经理，还是我们侍奉部的常客。)
 
         (顺便一提，她还有世界上最可爱的小恶魔的头衔。一个由砂糖、香辛料和某些美好的东西组成的可爱女孩。)"""
@@ -98,20 +99,28 @@ label start:
     h   "......"
     #sound #敲门音效
     scene stuunion
-    show iroha02
+    show iroha15
     l   "请进"
+    hide iroha15
     h   "打扰了"
     scene stuunion
-    show iroha19 
+    show iroha14 
     l   "啊，是前辈呀"#失望
+    hide iroha14
     h   "嗯，辛苦了 。可以和你说两句吗？"
+    show iroha11
     l   "当然可以……啊，让我先把这个文件处理一下。"
+    hide iroha11
+    show cg05
     #sound #拉椅子音效
-    h   "（八幡点点头，拉开椅子）"#这段要加吗？
+    # h   "（八幡点点头，拉开椅子）"
+    #这段要加吗？
+    #imo:我加了CG，所以把旁白删了，你们觉得需要加吗
     h   "……"
     scene stuunion
     show iroha09
     l   "前辈久等了"
+    hide iroha09
     h   "没事，看起来你很忙啊"
     scene stuunion
     show iroha03
@@ -127,6 +136,7 @@ label start:
     scene stuunion
     show iroha12
     l   "要喝咖啡吗？还是红茶？……或者是，『乐·活·水』"#这个抑扬顿挫有什么可以利用的音效吗
+        #imo:间隔号编码失败
     h   "咖啡。"
     scene stuunion
     show iroha07
