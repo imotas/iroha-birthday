@@ -25,13 +25,14 @@
 # 游戏在此开始。
 #以下的BG都是早期暂定的背景，后续要改的话记得改下文件名
 #所有的音效什么的都没加，前面加了#号防止错误
-define h = Character("八幡")
-define l = Character("一色")
-define t = Character("小町")
+define h = Character("比企谷八幡")
+define l = Character("一色彩羽")
+define t = Character("比企谷小町")
 label start:
 
     scene gatemorning
 
+    narrator "4月16日"
     #这段感觉可以黑屏开局，然后在倒数第三局的时候背景渐变出背景一色的立绘
     #imo:我设想的是，先展示总务高，然后跳出八幡的内心活动，会不会比黑屏好一点？
 
@@ -52,9 +53,14 @@ label start:
     #此处建议使用iroha09、11、12————猪脑过载
     #imo:这里插入CG好一点，找一张一色经典图
         
-    h """
-        (尤其是，对于今天的惊喜派对的主角，一色彩羽。)"""
+    h "(尤其是，对于今天的惊喜派对的主角，一色彩羽。)"
+    window hide
     show cg04
+    with fade
+    
+    pause
+    
+    window show
     h """
         (她是我们学校的学生会长，是足球部的经理，还是我们侍奉部的常客。)
 
@@ -68,6 +74,7 @@ label start:
     #imo:或者边缘模糊
 
     scene activitymorning
+    with fade
 
     show komachi02
     t "给你一个艰巨而又伟大的任务。"
@@ -75,10 +82,10 @@ label start:
     h "我这种渺小又平庸的人做不了艰巨又伟大的任务。"
     show komachi01
     t "哥哥不要贫嘴了，我们忙着给一色前辈准备惊喜呢。你要给我们争取时间，在我们准备完成之后把一色前辈带来活动室。"
-    hide komachi01
     #BG05
 
     scene corridor
+    with fade
 
     h """话题、话题……无论什么时候都能让人兴奋的话题……
 
@@ -92,6 +99,7 @@ label start:
     
 
     scene stuunion
+    with fade
 
     ##建议加一个敲门然后一色低头的立绘（iroha01），请进接抬头的立绘（iroha02），是前辈啊接失望的立绘（iroha04、07、08、18、19）————猪脑过载
 
@@ -111,54 +119,73 @@ label start:
     show iroha11
     l   "当然可以……啊，让我先把这个文件处理一下。"
     hide iroha11
+    window hide
     show cg05
+    with fade
+    
+    pause
+    
+    window show
     #sound #拉椅子音效
     # h   "（八幡点点头，拉开椅子）"
     #这段要加吗？
     #imo:我加了CG，所以把旁白删了，你们觉得需要加吗
     h   "……"
     scene stuunion
+    with fade
     show iroha09
     l   "前辈久等了"
     hide iroha09
     h   "没事，看起来你很忙啊"
     scene stuunion
-    show iroha03
+    show iroha16
     l   "不，其实并没有那么忙。新学期前确实比较忙碌，但现在已经稍微闲下来了。所以，其他成员今天都休息了。"
+    hide iroha16
     h   "哦……"
     h   "(原来如此。怪不得副会长、秘书等人都不在。没有特殊工作需要处理的时候，会让他们好好休息……哈哈，看来她是个称职的上司啊。)"
     h   "（露出老父亲的笑容）原来你当学生会长还挺称职的嘛。"#这里表情怎么体现啊，加点笑声？
+    show iroha04
     l   "突然这么说是什么意思？夸奖也不会有什么好处的"
-    l   "(一色突然站起，走向学生会的迷你冰箱)"#可以加推开椅子的音效#有条件的话想要在这里加一个背影的立绘————猪脑过载
+    hide iroha04
+    narrator   "一色突然站起，走向学生会的迷你冰箱"#可以加推开椅子的音效#有条件的话想要在这里加一个背影的立绘————猪脑过载
+    show iroha09
     l   "……要喝点什么吗？"
+    hide iroha09
     h   "哦，谢谢。"
     h   "(刚刚还说不会有什么好处，不愧是一色。)"
     scene stuunion
     show iroha12
-    l   "要喝咖啡吗？还是红茶？……或者是，『乐·活·水』"#这个抑扬顿挫有什么可以利用的音效吗
-        #imo:间隔号编码失败
+    l   "要喝咖啡吗？还是红茶？……或者是，『乐•活•水』"#这个抑扬顿挫有什么可以利用的音效吗
+    hide iroha12
     h   "咖啡。"
     scene stuunion
-    show iroha07
+    show iroha04
     l   "这个时候不应该选乐活水吗？"
     scene stuunion
-    show iroha05
+    show iroha07
     l   "嘛，前辈，是咖啡党呢。"
+    hide iroha07
     h   "也不是这个原因……嘛，最近经常喝。顺便用来提神。"
+    show iroha09
     l   "啊，说起来你是备考生呢。有效果吗？"
+    hide iroha09
     h   "非常有效。迷迷糊糊中碰到了桌子，一下就醒过来了。"
     scene stuunion
     show iroha13#这个尴尬的笑感觉挺合适————猪脑过载
     l   "那是正确的使用方法吗？"#这里加吐槽声音很合适
     scene stuunion
-    show iroha13#“好奇.jpg”————猪脑过载
+    show iroha11b#“好奇.jpg”————猪脑过载
+    #imo:我认为这里是突然严肃说正事的感觉
     l   "所以，今天有什么事情吗？"
+    hide iroha11b
     h   "(说实话，我并没有什么好说的，自然的搪塞过去吧。我最擅长这种事情了。)"
     h   "没什么，嗯……就想稍微商量点事情……你不是说周末要出去吗。有想去哪里吗？"
     scene stuunion
-    show iroha19#找不到适合的图了————猪脑过载
+    show iroha15#找不到适合的图了————猪脑过载
     l   "周末？哈？"#有佐仓的惊讶声音就加上去吧
+    hide iroha15
     h   "额……，什么啊这种反应……你说过要出去玩的啊……"
+    show iroha08
     l   """……
 
             ……
@@ -168,26 +195,34 @@ label start:
             ……"""
     scene stuunion
     show iroha18
-    h   """啊，那个……有啊"""
+    l   """啊，那个……好像是有这事来着"""
+    hide iroha18
     l   """ ……诶，你是认真的吗"""#好想加点语气词啊可恶
     h   "等下，你这么说真的好吗？我现在感觉像是一个把客套话当真的可怜人……"
     scene stuunion
     show iroha02#惊讶.jpg————猪脑过载
     l   "可以吗？和我一起出去什么的。"
+    hide iroha02
     h   "嗯，那个，就是，大家一起出去玩嘛。就是，最近也没什么机会，顺便庆祝生日，大家一起……"#紧张
     scene stuunion
     show iroha07#不满.jpg————猪脑过载
     l   "大家一起。哈。这样啊。你是想拒绝我一个人和你出去玩吗。"#加一色不满的“哈”的声音
+    hide iroha07
+    show iroha03
     l   "但是，大家一起出去也不错呢。去哪里好呢？……啊，难得的机会，去合宿吧。"
+    hide iroha03
     h   "呃……合宿？也许您不知道，我们的社团，是侍奉部这种谜一样的社团。和运动部不同，没必要去合宿练习。"#阴阳怪气
     scene stuunion
     show iroha17#得意.jpg————猪脑过载
     l   "难道不是什么都可以吗？文化系社团也在普通地合宿哦。我们学校，还有合宿部这种东西，所以别想那么多了。"
+    hide iroha17
     h   "啊，是吗？"#这句应该有原话的吧
+    show iroha11
     l   "正好是现在这个时期，比起认真练习，为了拉近关系而举行的合宿比较多吧。顺便一提，足球部也准备举行。"
+    hide iroha11
     h   "啊，有种迎新合宿的感觉。有些一开始营造出开心和睦的气氛，巧妙的欺骗新人并强迫拽进社团的家伙呢。"
     scene stuunion
-    show iroha16
+    show iroha04
     l   """你的说法也太差劲了……但大概是有的，所以很难否定。"""
     scene stuunion
     show iroha07
@@ -196,43 +231,62 @@ label start:
         要整理预定的计划，又要收钱，还要申请，菜单也必须考虑……
 
         哈，好麻烦。是真的很麻烦，不知道有啥意义，麻烦死了"""
+    hide iroha07
     h   "(这家伙，真的在认真做着足球部经理的工作呢)"
     scene stuunion
-    show iroha12
+    show iroha10
     l   "新人不来也可以……我想成为永远被爱的后辈。"#可以加一色卖萌语气
+    hide iroha10
     h   "呀，这种事情稍微有点难哦。"
+    show iroha02
     l   "为什么呢。我觉得我是一个非常受欢迎的后辈角色。"
+    hide iroha02
     h   "如果像你那样，为了后辈做了那么多努力，已经是优秀的前辈了吧，虽然我也不是很明白。"
     scene stuunion
-    show iroha13
+    show iroha01
     l   "不，没有那种事……我也没有努力。"
+    hide iroha01
     h   "是吗？没有干劲的话就差不多糊弄完，或者把工作扔给谁偷懒。根本不会感觉到麻烦"
     h   "感觉麻烦是因为在努力啊……"#(自嘲的笑了笑)
     scene stuunion
     show iroha18
     l   "哈！莫非现在你在追求我吗虽然被能干的上司认真注视这样的感觉很难不心动但请身材变好后再来吧对不起。"
+    hide iroha18
     h   "嗯，好的"
     scene stuunion
-    show iroha07
+    show iroha04
     l   "出现了，完全没有听人讲话的家伙……"
+    hide iroha04
     h   "不，是因为我已经习惯了……"
+    show iroha11b
     l   "习惯了……原来如此。正是因为习惯了，所以做一些不同的事情可能会比较有新鲜感。"
+    hide iroha11b
     #sound #手机提示音
     t   "准备就绪！"#这里可以给一个手机的界面，黑屏也可以，要表现出是手机的信息
-    l   "(差不多该把一色带到部室了。)"
+    #imo:有类似素材，等我找找
+    h   "(差不多该把一色带到部室了。)"
     h   "啊，一色。差不多该……"
     scene stuunion
-    show iroha09
+    show iroha03
     l   "是啊。差不多该去部室了。大家还在等着吧？"#这里打断要怎么处理比较好
+        #imo:我觉得用bgm的转变来处理较好
+    hide iroha03
     h   "诶，什，什么？"
+    show iroha07
     l   "你好不擅长制造惊喜啊。完全暴露了。"
+    hide iroha07
+    show iroha09
     l   "平时明明不会来学生会室的，今天突然过来了。这种事情你稍微做的自然点啊。"
+    hide iroha09
     h   "哦，哦……"#可加音效
     h   "(这家伙不简单，应该能轻松通过比企谷鉴定考试三级)"
     scene stuunion
     show iroha17
     l   "怎么办？要表现的非常吃惊吗？虽然我很擅长那样，但还是反过来给对方制造惊喜吧？"
-    h   "前辈快出去啦，我要锁门了。"#兴奋#可加一色兴奋的“前辈”sound
+    hide iroha17
+    show iroha03
+    l   "前辈快出去啦，我要锁门了。"#兴奋#可加一色兴奋的“前辈”sound
+    hide iroha03
 
 
     #Act 2, Scene 1
