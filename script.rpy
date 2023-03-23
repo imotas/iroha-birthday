@@ -1,4 +1,4 @@
-#gui文件为更改UI
+﻿#gui文件为更改UI
 #options更改游戏基本设施
 #screen游戏界面设置
 #script为根目录
@@ -70,9 +70,11 @@ label start:
 
     show komachi02
     t "给你一个艰巨而又伟大的任务。"
+    hide komachi02
     h "我这种渺小又平庸的人做不了艰巨又伟大的任务。"
     show komachi01
     t "哥哥不要贫嘴了，我们忙着给一色前辈准备惊喜呢。你要给我们争取时间，在我们准备完成之后把一色前辈带来活动室。"
+    hide komachi01
     #BG05
 
     scene corridor
