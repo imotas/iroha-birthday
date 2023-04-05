@@ -23,63 +23,68 @@ init python:
 ## 界面中文本的颜色。
 
 ## 整个界面中使用的强调色，用于标记和突出显示文本。
-define gui.accent_color = '#cc6600'
+define gui.accent_color = u'#000000'
 
-## 当文本按钮既未被选中也未被悬停时使用的颜色。
-define gui.idle_color = '#aaaaaa'
+## 当既未选中也未悬停时用于文本按钮的颜色。
+define gui.idle_color = u'#5b5b5b'
 
-## 小的颜色用于小的文本，需要更亮/更暗才能达到同样的效果。
-define gui.idle_small_color = '#888888'
+## 小颜色用于小文本，需要更亮/更暗才能达到相同的效果。
+define gui.idle_small_color = u'#5b5b5b'
 
-## 当按钮和滑条被悬停时使用的颜色。
-define gui.hover_color = '#cc6600'
+## 用于悬停的按钮和滑条的颜色。
+define gui.hover_color = u'#404040'
 
-## 当文本按钮被选中但非焦点时使用的颜色。当一个按钮为当前屏幕或设置选项值时，会
-## 处于选中状态。
-define gui.selected_color = '#555555'
+## 用于选中但非焦点的文本按钮的颜色。当一个按钮为当前屏幕或设置选项值时，会处于
+## 选中状态。
+define gui.selected_color = u'#292929'
 
-## 当文本按钮无法被选择时使用的颜色。
-define gui.insensitive_color = '#aaaaaa7f'
+## 用于无法选择的文本按钮的颜色。
+define gui.insensitive_color = u'#8888887f'
 
-## 滑条未填充的部分使用的颜色。这些颜色不直接使用，但在重新生成条形图像文件时使
+## 用于未填充的滑条部分的颜色。这些颜色不直接使用，但在重新生成条形图像文件时使
 ## 用。
-define gui.muted_color = '#e0a366'
-define gui.hover_muted_color = '#eac199'
+define gui.muted_color = u'#003d51'
+define gui.hover_muted_color = u'#005b7a'
 
-## 对话和菜单选择文本使用的颜色。
-define gui.text_color = '#404040'
-define gui.interface_text_color = '#404040'
+## 用于对话和菜单选择文本的颜色。
+define gui.text_color = "#000000"
+define gui.interface_text_color = u'#ffffff'
 
 
 ## 字体和字体大小 #####################################################################
 
-## 游戏内文本使用的字体。
-define gui.text_font = "SourceHanSansLite.ttf"
+## 用于游戏内文本的字体。
+define gui.text_font = "LXGWWenKaiScreenR.ttf"
 
-## 角色名称使用的字体。
-define gui.name_text_font = "SourceHanSansLite.ttf"
+## 用于角色名称的字体。
+define gui.name_text_font = "FZCuYSJ.ttf"
 
-## 游戏外文本使用的字体。
-define gui.interface_text_font = "SourceHanSansLite.ttf"
+## 用于游戏外文本的字体。
+define gui.interface_text_font = "HDSLSSXT.ttf"
+
+## 用于游戏系统提示的字体。
+define gui.ui_text_font = "FZCuYSJ.ttf"
+
+## 用于那些没法显示的颜文字的字体
+define gui.www_font = 'LXGWWenKaiScreenR.ttf'
 
 ## 普通对话文本的大小。
-define gui.text_size = 33
+define gui.text_size = 43
 
 ## 角色名称的大小。
-define gui.name_text_size = 45
+define gui.name_text_size = 50
 
 ## 游戏用户界面中文本的大小。
-define gui.interface_text_size = 33
+define gui.interface_text_size = 55
 
 ## 游戏用户界面中标签的大小。
-define gui.label_text_size = 36
+define gui.label_text_size = 60
 
 ## 通知屏幕上文本的大小。
-define gui.notify_text_size = 24
+define gui.notify_text_size = 45
 
 ## 游戏标题的大小。
-define gui.title_text_size = 75
-
+define gui.title_text_size = 50
 
 ## 标题和游戏菜单 #####################################################################
 
@@ -93,38 +98,38 @@ define gui.game_menu_background = "gui/game_menu.png"
 ## 这些变量控制对话如何在屏幕上逐行显示。
 
 ## 包含对话的文本框的高度。
-define gui.textbox_height = 278
+define gui.textbox_height = 100
 
-## 文本框在屏幕上的垂直位置。0.0 是顶部，0.5 是居中，1.0 是底部。
+## 文本框在屏幕上的垂直位置。0.0 是顶部，0.5 是正中，1.0 是底部。
 define gui.textbox_yalign = 1.0
 
 
-## 叙述角色名字相对于文本框的位置。可以是从左侧或顶部起的整数像素，或设为 0.5 来
-## 居中。
-define gui.name_xpos = 360
-define gui.name_ypos = 0
+## 叙述角色名称相对文本框的位置。可以是从左侧或顶部起的整数像素，或设为“0.5”来放
+## 置到正中。
+define gui.name_xpos = 0.1
+define gui.name_ypos = -2.6
 
-## 角色名字的水平对齐方式。0.0 为左侧对齐，0.5 为居中显示，而 1.0 为右侧对齐。
+## 角色名称的水平对齐方式。0.0 为左侧对齐，0.5 为居中显示，而 1.0 为右侧对齐。
 define gui.name_xalign = 0.0
 
-## 包含角色名字的方框的宽度、高度和边框尺寸，或设为 None 来自动确定其大小。
-define gui.namebox_width = None
-define gui.namebox_height = None
+## 包含角色名称的框的宽度，高度和边界尺寸，或设为“None”以自动调整其大小。
+define gui.namebox_width = 424
+define gui.namebox_height = 111
 
-## 包含角色名字的方框的边界尺寸，以左、上、右、下顺序排列。
-define gui.namebox_borders = Borders(5, 5, 5, 5)
+## 包含角色名称的框的边界尺寸，以左、上、右、下顺序排列。
+define gui.namebox_borders = Borders(15, 5, 5, 5)
 
-## 若为 True，则名字框的背景将平铺；若为 False，则名字框的背景将缩放。
+## 若为True，则名称框的背景将被平铺；若为False，则将缩放名称框的背景。
 define gui.namebox_tile = False
 
 
-## 对话相对于文本框的位置。可以是相对于文本框从左侧或顶部起的整数像素，或设为
-## 0.5 来居中。
-define gui.dialogue_xpos = 402
-define gui.dialogue_ypos = 75
+## 对话框相对于文本框的位置。可以是相对于文本框从左侧或顶部起的整数像素，或设
+## 为“0.5”来放置到正中。
+define gui.dialogue_xpos = 220
+define gui.dialogue_ypos = -121
 
-## 对话文本的最大宽度，以像素为单位。
-define gui.dialogue_width = 1116
+## 对话文本的最大宽度（以像素为单位）。
+define gui.dialogue_width = 1650
 
 ## 对话文本的水平对齐方式。0.0 为左侧对齐，0.5 为居中显示，而 1.0 为右侧对齐。
 define gui.dialogue_text_xalign = 0.0
@@ -207,22 +212,22 @@ define gui.choice_button_text_insensitive_color = "#444444"
 ## gui/button 中的图像文件，就像其他类型的按钮一样。
 
 ## 存档位按钮。
-define gui.slot_button_width = 414
-define gui.slot_button_height = 309
-define gui.slot_button_borders = Borders(15, 15, 15, 15)
-define gui.slot_button_text_size = 21
+define gui.slot_button_width = 352
+define gui.slot_button_height = 200
+define gui.slot_button_borders = Borders(0, 0, 0, 0)
+define gui.slot_button_text_size = 40
 define gui.slot_button_text_xalign = 0.5
 define gui.slot_button_text_idle_color = gui.idle_small_color
 define gui.slot_button_text_selected_idle_color = gui.selected_color
 define gui.slot_button_text_selected_hover_color = gui.hover_color
 
 ## 存档所用缩略图的宽度和高度。
-define config.thumbnail_width = 384
-define config.thumbnail_height = 216
+define config.thumbnail_width = 352
+define config.thumbnail_height = 193
 
 ## 存档网格中的列数和行数。
-define gui.file_slot_cols = 3
-define gui.file_slot_rows = 2
+define gui.file_slot_cols = 2
+define gui.file_slot_rows = 3
 
 
 ## 定位和间距 #######################################################################

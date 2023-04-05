@@ -92,6 +92,10 @@ style frame:
 ##
 ## https://www.renpy.cn/doc/screen_special.html#say
 
+transform say_text_fade:
+    alpha 0.0
+    linear 0.25 alpha 1.0
+
 screen say(who, what):
     style_prefix "say"
 
@@ -105,13 +109,29 @@ screen say(who, what):
                 style "namebox"
                 text who id "who"
 
-        text what id "what"
+        text what id "what" at say_text_fade:
+            line_spacing 30
 
+    imagebutton:
+        xpos 1700
+        ypos 790
+        idle "images/mybutton/delete2.png"
+        action HideInterface()
+    
+
+    if persistent.enable_chinmoku_score_count and out_talk == False:
+        label "得分:%d"%chinmoku_score :
+            text_font gui.ui_text_font
+            text_size 40
+            align (0,0)
 
     ## 如果有对话框头像，会将其显示在文本之上。请不要在手机界面下显示这个，因为
     ## 没有空间。
-    if not renpy.variant("small"):
-        add SideImage() xalign 0.0 yalign 1.0
+    # if not renpy.variant("small"):
+    add SideImage():
+        xpos 119
+        ypos 736
+        #xalign 0.0 yalign 1.0
 
 
 ## 通过 Character 对象使名称框可用于样式化。
@@ -132,7 +152,6 @@ style window:
     xfill True
     yalign gui.textbox_yalign
     ysize gui.textbox_height
-
     background Image("gui/textbox.png", xalign=0.5, yalign=1.0)
 
 style namebox:
@@ -157,7 +176,14 @@ style say_dialogue:
     xsize gui.dialogue_width
     ypos gui.dialogue_ypos
 
-    adjust_spacing False
+init -1 python:
+
+    style.rubytext_style = Style(style.default)
+    style.rubytext_style.size = 30
+    style.rubytext_style.yoffset = -50
+    style.rubytext_style.font = 'LXGWWenKaiScreenR.ttf'
+
+    style.default.ruby_style = style.rubytext_style
 
 ## 输入界面 ########################################################################
 ##
@@ -235,24 +261,40 @@ screen quick_menu():
     zorder 100
 
     if quick_menu:
-
-        hbox:
-            style_prefix "quick"
-
-            xalign 0.5
+        imagebutton:
+            # 菜单
+            xalign 0.99
             yalign 1.0
+            idle "images/mybutton/menu_button.png"
+            action ShowMenu('game_menu')
+        imagebutton:
+            xalign 0.99
+            yalign 0.88
+            if (renpy.is_skipping() == True):
+                idle "images/mybutton/skip_on.png"
+            else:
+                idle "images/mybutton/skip_off.png"
+            action Skip() alternate Skip(fast=True, confirm=True)
+        imagebutton:
+            xalign 0.99
+            yalign 0.76
+            if (preferences.afm_enable == True):
+                idle "images/mybutton/auto_on.png"
+            else:
+                idle "images/mybutton/auto_off.png"
+            action Preference("auto-forward", "toggle")
+        if persistent.enable_rollback:
+            imagebutton:
+                xalign 0.99
+                yalign 0.63
+                idle "images/mybutton/back_button.png"
+                action Rollback()
+        #textbutton _("历史") action ShowMenu('history')
+        #textbutton _("快存") action QuickSave()
+        #textbutton _("快读") action QuickLoad()
 
-            textbutton _("回退") action Rollback()
-            textbutton _("历史") action ShowMenu('history')
-            textbutton _("快进") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("自动") action Preference("auto-forward", "toggle")
-            textbutton _("保存") action ShowMenu('save')
-            textbutton _("快存") action QuickSave()
-            textbutton _("快读") action QuickLoad()
-            textbutton _("设置") action ShowMenu('preferences')
 
-
-## 此代码确保只要用户没有主动隐藏界面，就会在游戏中显示 quick_menu 界面。
+## 此语句确保只要玩家没有明确隐藏界面，就会在游戏中显示“quick_menu”界面。
 init python:
     config.overlay_screens.append("quick_menu")
 
@@ -266,6 +308,7 @@ style quick_button:
 
 style quick_button_text:
     properties gui.button_text_properties("quick_button")
+    size 20
 
 
 ################################################################################
@@ -309,11 +352,6 @@ screen navigation():
             textbutton _("标题界面") action MainMenu()
 
         textbutton _("关于") action ShowMenu("about")
-
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
-
-            ## “帮助”对移动设备来说并非必需或相关。
-            textbutton _("帮助") action ShowMenu("help")
 
         if renpy.variant("pc"):
 
@@ -401,123 +439,101 @@ style main_menu_version:
 ## scroll 参数可以是 None，也可以是 viewport 或 vpgrid。当此界面与一个或多个子界
 ## 面同时使用时，这些子界面将被嵌入（放置）在其中。
 
-screen game_menu(title, scroll=None, yinitial=0.0):
+screen game_menu_qsave():
+    tag menu
+    timer 0.5 action QuickSave()
+    timer 0.5 action ShowMenu("game_menu")
 
+transform imagebutton_trans:
+    xoffset 250
+    easein 0.5 xoffset 0
+
+transform imagebutton_trans2:
+    xoffset -250
+    easein 0.5 xoffset 0
+
+screen game_menu():
+    tag menu
     style_prefix "game_menu"
-
-    if main_menu:
-        add gui.main_menu_background
-    else:
-        add gui.game_menu_background
-
+    add "gui/overlay/game_menu.png":
+        alpha 0.6
+    add "images/system/bg/game_menu_bg.png":
+        xalign 1.0
+        ypos 0.1
     frame:
-        style "game_menu_outer_frame"
-
-        hbox:
-
-            ## 导航部分的预留空间。
-            frame:
-                style "game_menu_navigation_frame"
-
-            frame:
-                style "game_menu_content_frame"
-
-                if scroll == "viewport":
-
-                    viewport:
-                        yinitial yinitial
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
-
-                        side_yfill True
-
-                        vbox:
-                            transclude
-
-                elif scroll == "vpgrid":
-
-                    vpgrid:
-                        cols 1
-                        yinitial yinitial
-
-                        scrollbars "vertical"
-                        mousewheel True
-                        draggable True
-                        pagekeys True
-
-                        side_yfill True
-
-                        transclude
-
-                else:
-
-                    transclude
-
-    use navigation
-
+        background None
+        xalign 1.0
+        ypos 235
+        vbox:    
+            spacing 10
+            imagebutton:
+                idle "images/mybutton/gamemenu/load.png"
+                hover "images/mybutton/gamemenu/load2.png"
+                insensitive "images/mybutton/gamemenu/load3.png"
+                at imagebutton_trans
+                action ShowMenu("load")
+            imagebutton:
+                idle "images/mybutton/gamemenu/save.png"
+                hover "images/mybutton/gamemenu/save2.png"
+                insensitive "images/mybutton/gamemenu/save3.png"
+                at imagebutton_trans
+                action ShowMenu("save")
+            imagebutton:
+                idle "images/mybutton/gamemenu/quickload.png"
+                hover "images/mybutton/gamemenu/quickload2.png"
+                insensitive "images/mybutton/gamemenu/quickload3.png"
+                at imagebutton_trans
+                action QuickLoad()
+            imagebutton:
+                idle "images/mybutton/gamemenu/quicksave.png"
+                hover "images/mybutton/gamemenu/quicksave2.png"
+                insensitive "images/mybutton/gamemenu/quicksave3.png"
+                at imagebutton_trans
+                action ShowMenu("game_menu_qsave")
+            imagebutton:
+                idle "images/mybutton/gamemenu/settings.png"
+                hover "images/mybutton/gamemenu/settings2.png"
+                at imagebutton_trans
+                action ShowMenu("preferences")
+            imagebutton:
+                idle "images/mybutton/gamemenu/history.png"
+                hover "images/mybutton/gamemenu/history2.png"
+                at imagebutton_trans
+                action ShowMenu("history")
+            imagebutton:
+                idle "images/mybutton/gamemenu/mainmenu.png"
+                hover "images/mybutton/gamemenu/mainmenu2.png"
+                at imagebutton_trans
+                action MainMenu()
+    
     textbutton _("返回"):
         style "return_button"
-
+        xalign 0.95
+        yalign 0.98
         action Return()
 
-    label title
-
-    if main_menu:
-        key "game_menu" action ShowMenu("main_menu")
-
-
-style game_menu_outer_frame is empty
-style game_menu_navigation_frame is empty
-style game_menu_content_frame is empty
-style game_menu_viewport is gui_viewport
-style game_menu_side is gui_side
-style game_menu_scrollbar is gui_vscrollbar
-
-style game_menu_label is gui_label
-style game_menu_label_text is gui_label_text
-
-style return_button is navigation_button
-style return_button_text is navigation_button_text
-
-style game_menu_outer_frame:
-    bottom_padding 45
-    top_padding 180
-
-    background "gui/overlay/game_menu.png"
-
-style game_menu_navigation_frame:
-    xsize 420
-    yfill True
-
-style game_menu_content_frame:
-    left_margin 60
-    right_margin 30
-    top_margin 15
-
-style game_menu_viewport:
-    xsize 1380
-
-style game_menu_vscrollbar:
-    unscrollable gui.unscrollable
-
-style game_menu_side:
-    spacing 15
-
-style game_menu_label:
-    xpos 75
-    ysize 180
-
-style game_menu_label_text:
-    size gui.title_text_size
-    color gui.accent_color
-    yalign 0.5
-
 style return_button:
-    xpos gui.navigation_xpos
-    yalign 1.0
-    yoffset -45
+    background "gui/button/empty_return_botton.png"
+    xalign 1.0
+    yalign 0.95
+    xpadding 53
+    ypadding 36
+
+style return_button_text:
+    font gui.ui_text_font
+    size 35
+    vertical True
+
+style game_menu_text is gui_text
+
+style game_menu_text:
+    font gui.ui_text_font
+    color "#000000"
+    xpos 240
+    xalign 0.5
+    text_align 0.5
+    xsize 400
+    size 30
 
 
 ## 关于界面 ########################################################################
@@ -530,32 +546,44 @@ style return_button:
 screen about():
 
     tag menu
+    add 'about_bg'
+    ## 此“use”语句将包含“game_menu”界面到此处。子级“vbox”将包含在“game_menu”界面
+    ## 的“viewport”内。
+    # use game_menu(_("关于"), scroll="viewport"):
 
-    ## 此 use 语句将 game_menu 界面包含到了这个界面内。子级 vbox 将包含在
-    ## game_menu 界面的 viewport 内。
-    use game_menu(_("关于"), scroll="viewport"):
-
-        style_prefix "about"
-
+    style_prefix "about"
+    label "关于":
+        xpos 0.3
+        ypos 0.15
+    viewport:
+        xpos 0.3
+        ypos 0.24
+        scrollbars "vertical"
+        mousewheel True
+        draggable True
         vbox:
+            spacing 5
+            for i in gui.about:
+                text i
+            null height 30
+            label "啦啦啦" text_size 45
 
-            label "[config.name!t]"
-            text _("版本 [config.version!t]\n")
-
-            ## gui.about 通常在 options.rpy 中设置。
-            if gui.about:
-                text "[gui.about!t]\n"
-
-            text _("引擎：{a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only]\n\n[renpy.license!t]")
-
+    textbutton _("返回"):
+        style "return_button"
+        action Return()
 
 style about_label is gui_label
-style about_label_text is gui_label_text
-style about_text is gui_text
+style about_label_text is gui_label_text:
+    color "#000000"
+    font gui.www_font
+    size 45
+style about_text is gui_text:
+    color "#000000"
+    font gui.www_font
+    size 40
 
 style about_label_text:
     size gui.label_text_size
-
 
 ## 读取和保存界面 #####################################################################
 ##
@@ -566,107 +594,129 @@ style about_label_text:
 ## screen_special.html#load
 
 screen save():
-
     tag menu
 
-    use file_slots(_("保存"))
-
+    use file_slots(_(False))
 
 screen load():
 
     tag menu
 
-    use file_slots(_("读取游戏"))
+    use file_slots(_(True))
 
+init python:
+    auto_page_num = 0
 
-screen file_slots(title):
-
+screen file_slots(flag):
+    
     default page_name_value = FilePageNameInputValue(pattern=_("第 {} 页"), auto=_("自动存档"), quick=_("快速存档"))
 
-    use game_menu(title):
+    # use game_menu(title):
+    if flag:
+        add "images/system/bg/load_bg.png"
+    else:
+        add "images/system/bg/save_bg.png"
+    fixed:
+        ## 存档位网格。
+        hbox:
+            for j in range(gui.file_slot_cols):
+                $ xxps = 44 + j * 604
+                vbox:
+                    style_prefix "slot"
+                    xpos xxps
+                    ypos 236
+                    spacing 88
+                    for i in range(gui.file_slot_rows):
+                        if auto_page_num!=0:
+                            $ slot = (auto_page_num-1)*6 + j * gui.file_slot_rows + i + 1
+                        else:
+                            $ slot = j * gui.file_slot_rows + i + 1
+                        button:
+                            if flag:
+                                action [Stop("music",fadeout = 1.0),FileLoad(slot)]
+                            else:
+                                action FileSave(slot)
+                            has vbox
 
-        fixed:
+                            add FileScreenshot(slot) yoffset 2
 
-            ## 此代码确保输入控件在任意按钮执行前可以获取 enter 事件。
-            order_reverse True
+                            text FileSlotName(slot, gui.file_slot_cols * gui.file_slot_rows, format=_("NO: %s%d")):
+                                style "slot_name_text"
 
-            ## 页面名称，可以通过单击按钮进行编辑。
-            button:
-                style "page_label"
+                            key "save_delete" action FileDelete(slot)
 
-                key_events True
-                xalign 0.5
-                action page_name_value.Toggle()
+                            imagebutton:
+                                xpos 700
+                                yoffset -275
+                                idle "images/mybutton/delete.png"
+                                action FileDelete(slot)
 
-                input:
-                    style "page_label_text"
-                    value page_name_value
+                            text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
+                                style "slot_time_text"
 
-            ## 存档位网格。
-            grid gui.file_slot_cols gui.file_slot_rows:
-                style_prefix "slot"
+                            text FileSaveName(slot):
+                                style "slot_title_text"
 
-                xalign 0.5
-                yalign 0.5
+        ## 用于访问其他页面的按钮。
+        hbox:
+            style_prefix "page"
 
-                spacing gui.slot_spacing
+            xalign 0.64
+            yalign 0.04
 
-                for i in range(gui.file_slot_cols * gui.file_slot_rows):
+            spacing gui.page_spacing
 
-                    $ slot = i + 1
+            textbutton _("<") action FilePagePrevious()
 
-                    button:
-                        action FileAction(slot)
+            if config.has_autosave:
+                textbutton _("{#auto_page}A1") action [FilePage("auto"),SetVariable("auto_page_num",1)]
+                textbutton _("{#auto_page}A2") action [FilePage("auto"),SetVariable("auto_page_num",2)]
+                textbutton _("{#auto_page}A3") action [FilePage("auto"),SetVariable("auto_page_num",3)]
+                textbutton _("{#auto_page}A4") action [FilePage("auto"),SetVariable("auto_page_num",4)]
+                textbutton _("{#auto_page}A5") action [FilePage("auto"),SetVariable("auto_page_num",5)]
 
-                        has vbox
+            if config.has_quicksave:
+                textbutton _("{#quick_page}Q") action [FilePage("quick"),SetVariable("auto_page_num",0)]
 
-                        add FileScreenshot(slot) xalign 0.5
+            ## “range(1, 10)”给出 1 到 9 之间的数字。
+            for page in range(1, 10):
+                textbutton "[page]" action [FilePage(page),SetVariable("auto_page_num",0)]
 
-                        text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
-                            style "slot_time_text"
+            textbutton _(">"):
+                action FilePageNext(max = 9)
 
-                        text FileSaveName(slot):
-                            style "slot_name_text"
-
-                        key "save_delete" action FileDelete(slot)
-
-            ## 用于访问其他页面的按钮。
-            hbox:
-                style_prefix "page"
-
-                xalign 0.5
-                yalign 1.0
-
-                spacing gui.page_spacing
-
-                textbutton _("<") action FilePagePrevious()
-
-                if config.has_autosave:
-                    textbutton _("{#auto_page}A") action FilePage("auto")
-
-                if config.has_quicksave:
-                    textbutton _("{#quick_page}Q") action FilePage("quick")
-
-                ## range(1, 10) 给出 1 到 9 之间的数字。
-                for page in range(1, 10):
-                    textbutton "[page]" action FilePage(page)
-
-                textbutton _(">") action FilePageNext()
-
+        textbutton _("返回"):
+            style "return_button"
+            yalign 1.0
+            action Return()
 
 style page_label is gui_label
-style page_label_text is gui_label_text
+style page_label_text is gui_label_text:
+    color "#000000"
 style page_button is gui_button
 style page_button_text is gui_button_text
 
 style slot_button is gui_button
 style slot_button_text is gui_button_text
-style slot_time_text is slot_button_text
-style slot_name_text is slot_button_text
+style slot_time_text is slot_button_text:
+    xpos 550
+    ypos -100
+style slot_title_text is slot_button_text:
+    font gui.ui_text_font
+    size 30
+    xpos 550
+    ypos -200
+style slot_name_text is slot_button_text:
+    font gui.ui_text_font
+    xpos 530
+    ypos -175
+    # bold True
+    color "#000000"
+    size 50
 
 style page_label:
-    xpadding 75
-    ypadding 5
+    xpadding 50
+    ypadding 3
 
 style page_label_text:
     text_align 0.5
@@ -678,6 +728,8 @@ style page_button:
 
 style page_button_text:
     properties gui.button_text_properties("page_button")
+    size 55
+    font gui.ui_text_font
 
 style slot_button:
     properties gui.button_properties("slot_button")
@@ -692,86 +744,132 @@ style slot_button_text:
 ##
 ## https://www.renpy.cn/doc/screen_special.html#preferences
 
+screen preferences_extra():
+
+    tag menu
+
+    add "images/system/bg/settings_mainbg.png"
+
+    vbox:
+        xpos 540
+        ypos 263
+        style_prefix "radio"
+        label _("实验性功能")xsize 250
+        label "这些功能是移植版增加的" xsize 1200 text_style "preferences_extra_label"
+        textbutton _("显示‘攻略’页面") action ToggleVariable("persistent.enable_stragy") xsize 550 left_padding -3
+        textbutton _("显示‘好感度统计’页面") action ToggleVariable("persistent.enable_statistics") xsize 550 left_padding -3
+        textbutton _("沉默打破模式显示得分") action ToggleVariable("persistent.enable_chinmoku_score_count") xsize 550 left_padding -3
+        label "（该选项存在更新延迟，作出选择后无法立即看到分数变化）" xsize 1200 text_style "preferences_extra_label"
+        textbutton _("允许回退") action ToggleVariable("persistent.enable_rollback") xsize 550 left_padding -3
+        label "（使用鼠标滚轮、安卓的‘返回’操作或对话框上的按钮倒回上一条对话）" xsize 1200 text_style "preferences_extra_label"
+        label "（该选项重启后生效，回退功能有时候会出bug，请自行决定是否使用）" xsize 1200 text_style "preferences_extra_label"
+    textbutton _("返回"):
+        style "return_button"
+        action ShowMenu("preferences")
+
+style preferences_extra_label:
+    font gui.ui_text_font
+    size 35
+
 screen preferences():
 
     tag menu
 
-    use game_menu(_("设置"), scroll="viewport"):
+    add "images/system/bg/settings_mainbg.png"
 
-        vbox:
-
-            hbox:
-                box_wrap True
-
-                if renpy.variant("pc") or renpy.variant("web"):
-
-                    vbox:
-                        style_prefix "radio"
-                        label _("显示")
-                        textbutton _("窗口") action Preference("display", "window")
-                        textbutton _("") action Preference("display", "fullscreen")
-
-                vbox:
-                    style_prefix "check"
-                    label _("快进")
-                    textbutton _("未读文本") action Preference("skip", "toggle")
-                    textbutton _("选项后继续") action Preference("after choices", "toggle")
-                    textbutton _("忽略转场") action InvertSelected(Preference("transitions", "toggle"))
-
-                ## 可在此处添加 radio_pref 或 check_pref 类型的额外 vbox，以添加
-                ## 额外的创建者定义的偏好设置。
-
-            null height (4 * gui.pref_spacing)
-
-            hbox:
-                style_prefix "slider"
-                box_wrap True
+    textbutton "实验性功能":
+        xpos 540
+        ypos 860
+        action ShowMenu("preferences_extra")
+    vbox:
+        xpos 540
+        ypos 263
+        hbox:
+            box_wrap True
+            spacing 120
+            if renpy.variant("pc") or renpy.variant("web"):
 
                 vbox:
+                    style_prefix "radio"
+                    label _("显示")
+                    textbutton _("窗口") action Preference("display", "window")
+                    textbutton _("全屏") action Preference("display", "fullscreen")
 
-                    label _("文字速度")
+            vbox:
+                style_prefix "radio"
+                label _("说话动画")xsize 250
+                textbutton _("启用") action SetVariable("persistent.disable_animation" , None) left_padding -3
+                textbutton _("禁用") action SetVariable("persistent.disable_animation" , True) left_padding -3
 
-                    bar value Preference("text speed")
+            vbox:
+                style_prefix "check"
+                label _("快进")
+                textbutton _("未读文本") action Preference("skip", "toggle") xoffset 20
+                # textbutton _("选项后继续") action Preference("after choices", "toggle")
+                # textbutton _("忽略转场") action InvertSelected(Preference("transitions", "toggle"))
+            vbox:
+                style_prefix "check"
+                label _("自动模式")
+                textbutton _("等待语音") action Preference("wait for voice", "toggle")  xoffset 20
 
-                    label _("自动前进时间")
+            ## 可以在此处添加类型为“radio_pref”或“check_pref”的其他“vbox”，
+            ## 以添加其他创建者定义的首选项设置。
 
-                    bar value Preference("auto-forward time")
+        null height (4 * gui.pref_spacing)
 
-                vbox:
+        hbox:
+            style_prefix "slider"
+            box_wrap True
+            spacing 200
 
-                    if config.has_music:
-                        label _("音乐音量")
+            vbox:
 
-                        hbox:
-                            bar value Preference("music volume")
+                label _("文字速度")
 
-                    if config.has_sound:
+                bar value Preference("text speed")
 
-                        label _("音效音量")
+                label _("自动前进时间")
 
-                        hbox:
-                            bar value Preference("sound volume")
+                bar value Preference("auto-forward time")
 
-                            if config.sample_sound:
-                                textbutton _("测试") action Play("sound", config.sample_sound)
+            vbox:
+
+                if config.has_music:
+                    label _("音乐音量")
+
+                    hbox:
+                        bar value Preference("music volume")
+
+                if config.has_sound:
+
+                    label _("音效音量")
+
+                    hbox:
+                        bar value Preference("sound volume")
+
+                        #if config.sample_sound:
+                        #    textbutton _("测试") action Play("sound", config.sample_sound)
 
 
-                    if config.has_voice:
-                        label _("语音音量")
+                if config.has_voice:
+                    label _("语音音量")
 
-                        hbox:
-                            bar value Preference("voice volume")
+                    hbox:
+                        bar value Preference("voice volume")
 
-                            if config.sample_voice:
-                                textbutton _("测试") action Play("voice", config.sample_voice)
+                        if config.sample_voice:
+                            textbutton _("测试") action Play("voice", config.sample_voice)
 
-                    if config.has_music or config.has_sound or config.has_voice:
-                        null height gui.pref_spacing
+                if config.has_music or config.has_sound or config.has_voice:
+                    null height gui.pref_spacing
 
-                        textbutton _("全部静音"):
-                            action Preference("all mute", "toggle")
-                            style "mute_all_button"
-
+                    textbutton _("全部静音"):
+                        xoffset 20
+                        action Preference("all mute", "toggle")
+                        style "mute_all_button"
+    textbutton _("返回"):
+        style "return_button"
+        action Return()
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
@@ -801,97 +899,154 @@ style mute_all_button_text is check_button_text
 
 style pref_label:
     top_margin gui.pref_spacing
-    bottom_margin 3
+    bottom_margin 2
 
 style pref_label_text:
     yalign 1.0
 
 style pref_vbox:
-    xsize 338
+    xsize 225
 
 style radio_vbox:
-    spacing gui.pref_button_spacing
+    # spacing gui.pref_button_spacing
+    # 调整间距以适应横线
+    spacing 30
+
 
 style radio_button:
     properties gui.button_properties("radio_button")
     foreground "gui/button/radio_[prefix_]foreground.png"
+    left_padding 6
+    top_padding 10
 
 style radio_button_text:
     properties gui.button_text_properties("radio_button")
 
 style check_vbox:
-    spacing gui.pref_button_spacing
+    # spacing gui.pref_button_spacing
+    spacing 30
 
 style check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
+    left_padding -20
+    top_padding 10
 
 style check_button_text:
     properties gui.button_text_properties("check_button")
 
 style slider_slider:
-    xsize 525
+    xsize 338
+    ysize 71
 
 style slider_button:
     properties gui.button_properties("slider_button")
     yalign 0.5
-    left_margin 15
+    xmargin 10
 
 style slider_button_text:
     properties gui.button_text_properties("slider_button")
 
 style slider_vbox:
-    xsize 675
+    xsize 400
+    yoffset -19
+    #spacing 5
 
 
 ## 历史界面 ########################################################################
 ##
-## 这是一个向用户显示对话历史的界面。虽然此界面没有什么特别之处，但它必须访问储
-## 存在 _history_list 中的对话历史记录。
+## 这是一个向玩家显示对话历史的界面。虽然此界面没有任何特殊之处，但它必须访问储
+## 存在“_history_list”中的对话历史记录。
 ##
 ## https://www.renpy.cn/doc/history.html
 
 screen history():
 
     tag menu
-
+    add "images/system/bg/history_bg.png"
     ## 避免预缓存此界面，因为它可能非常大。
     predict False
+    frame:
+        style "log_frame_style"
+        frame:
+            style "log_history_window_frame_style"
+            viewport:
+                yinitial 1.0
+                scrollbars "vertical"
+                mousewheel True
+                draggable True
+                # 确保整个Frame塞满
+                side_yfill True
+                side_xfill True
+                vscrollbar_xoffset 25
+                vbox:
+                    spacing 20
+                    for h in _history_list:
+                        hbox:
+                            if h.voice.filename != None:
+                                imagebutton:
+                                    idle 'images/mybutton/play_voice.png'
+                                    action Play('voice',h.voice.filename)
+                            else:
+                                null width 70
+                            frame:
+                                background None
+                                ## 此语句可确保如果“history_height”为“None”的话仍可正常显示条目。
+                                has fixed:
+                                    yfit True
+                                if h.who:
+                                    label h.who:
+                                        style "history_name"
+                                        substitute False
+                                        ## 若角色颜色已设置，则从“Character”对象中读取颜色到叙述人文本中。
+                                        if "color" in h.who_args:
+                                            text_color h.who_args["color"]
+                                $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
+                                label what:
+                                    yminimum 100
+                                    # 直接使用history_text，也可以自定义其他样式
+                                    style "log_text_style"
+                                    substitute False
 
-    use game_menu(_("历史"), scroll=("vpgrid" if gui.history_height else "viewport"), yinitial=1.0):
+                if not _history_list:
+                    label _("尚无对话历史记录。")
 
-        style_prefix "history"
+    textbutton _("返回"):
+        style "return_button"
+        yalign 0.95
+        action [Stop('voice',fadeout = 0.5),Return()]
 
-        for h in _history_list:
+# log界面主体显示区域样式
+style log_frame_style:
+    ypos 290
+    left_padding 300
+    right_padding 60
+    bottom_padding 250
 
-            window:
+# log界面文本标签区域样式
+style log_label_frame_style:
+    top_padding 50
+    xfill True
 
-                ## 此代码可确保如果 history_height 为 None 时仍可正常显示条目。
-                has fixed:
-                    yfit True
+# log界面窗口区域样式
+style log_history_window_frame_style:
+    bottom_padding 100
+    xfill True
 
-                if h.who:
+# log文本样式
+style log_text_style:
+    color "#444444"
+    xpos gui.history_text_xpos
+    ypos gui.history_text_ypos
+    xanchor gui.history_text_xalign
+    xsize gui.history_text_width
+    min_width gui.history_text_width
+    text_align gui.history_text_xalign
+    layout ("subtitle" if gui.history_text_xalign else "tex")
 
-                    label h.who:
-                        style "history_name"
-                        substitute False
+## 此语句决定了允许在历史记录界面上显示哪些标签。
 
-                        ## 从 Character 对象中获取叙述角色的文字颜色，如果设置了
-                        ## 的话。
-                        if "color" in h.who_args:
-                            text_color h.who_args["color"]
-
-                $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
-                text what:
-                    substitute False
-
-        if not _history_list:
-            label _("尚无对话历史记录。")
-
-
-## 此代码决定了允许在历史记录界面上显示哪些标签。
-
-define gui.history_allow_tags = { "alt", "noalt", "rt", "rb", "art" }
+define gui.history_allow_tags = { "alt", "noalt" }
 
 
 style history_window is empty
@@ -900,12 +1055,13 @@ style history_name is gui_label
 style history_name_text is gui_label_text
 style history_text is gui_text
 
+style history_text is gui_text
+
 style history_label is gui_label
 style history_label_text is gui_label_text
 
 style history_window:
     xfill True
-    ysize gui.history_height
 
 style history_name:
     xpos gui.history_name_xpos
@@ -916,13 +1072,15 @@ style history_name:
 style history_name_text:
     min_width gui.history_name_width
     text_align gui.history_name_xalign
+    font gui.text_font
+    size 43
 
 style history_text:
     xpos gui.history_text_xpos
     ypos gui.history_text_ypos
     xanchor gui.history_text_xalign
     xsize gui.history_text_width
-    min_width gui.history_text_width
+    ysize None
     text_align gui.history_text_xalign
     layout ("subtitle" if gui.history_text_xalign else "tex")
 
@@ -1252,7 +1410,35 @@ style notify_frame:
 
 style notify_text:
     properties gui.text_properties("notify")
+    font gui.ui_text_font
 
+transform dateappear:
+    #on show:
+    #    alpha 0.0
+    #    linear 0.25 alpha 1.0
+    on hide:
+        linear 1.0 alpha 0.0
+init -1 python:
+    last_date = ''
+    picdict = {'7':'jul,png','8':'aug.png','9':'sep.png'}
+screen showdate(date):
+    zorder 200
+    if date != '' and date!=last_date:
+        $ Mon = date[0]
+        $ Day = date[2:-1]
+        $ fnm = 'images/system/'+picdict[Mon]
+        $ last_date = date
+        frame at autosaveicon:
+            xpos 0.2
+            xsize 218
+            ysize 181
+            yoffset -25
+            background Frame(fnm)
+            foreground Text(Day,color = '#ffffff',size = 60,xalign = 0.6,yalign = 0.5,font = gui.ui_text_font,bold = True)
+            # text Day
+    timer 2.0 action Hide('showdate')
+
+style showdate_frame is empty
 
 ## NVL 模式界面 ####################################################################
 ##
@@ -1261,58 +1447,13 @@ style notify_text:
 ## https://www.renpy.cn/doc/screen_special.html#nvl
 
 
+init -2 python:
+    nvl_mode = 1
+    MC_Name = '比企谷八幡'
+
 screen nvl(dialogue, items=None):
+    use chat_dialogue(dialogue, items)
 
-    window:
-        style "nvl_window"
-
-        has vbox:
-            spacing gui.nvl_spacing
-
-        ## 在 vpgrid 或 vbox 中显示对话框。
-        if gui.nvl_height:
-
-            vpgrid:
-                cols 1
-                yinitial 1.0
-
-                use nvl_dialogue(dialogue)
-
-        else:
-
-            use nvl_dialogue(dialogue)
-
-        ## Displays the menu, if given. The menu may be displayed incorrectly if
-        ## config.narrator_menu is set to True.
-        for i in items:
-
-            textbutton i.caption:
-                action i.action
-                style "nvl_button"
-
-    add SideImage() xalign 0.0 yalign 1.0
-
-
-screen nvl_dialogue(dialogue):
-
-    for d in dialogue:
-
-        window:
-            id d.window_id
-
-            fixed:
-                yfit gui.nvl_height is None
-
-                if d.who is not None:
-
-                    text d.who:
-                        id d.who_id
-
-                text d.what:
-                    id d.what_id
-
-
-## 此语句控制一次可以显示的 NVL 模式条目的最大数量。
 define config.nvl_list_length = gui.nvl_list_length
 
 style nvl_window is default
@@ -1370,7 +1511,98 @@ style nvl_button:
 style nvl_button_text:
     properties gui.button_text_properties("nvl_button")
 
+# 这是邮件模式的页面,参考了https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=62837%20上的代码(原作者已表明可以使用他的代码)
 
+
+
+transform phone_transform(pXalign=0.5, pYalign=0.5):
+    xcenter pXalign
+    yalign pYalign
+
+transform message_appear(pDirection):
+    alpha 0.0
+    xoffset 50 * pDirection
+    parallel:
+        ease 0.5 alpha 1.0
+    parallel:
+        easein_back 0.5 xoffset 0
+
+transform message_appear_y(pDirection):
+    alpha 0.0
+    yoffset 50 * pDirection
+    parallel:
+        ease 0.5 alpha 1.0
+    parallel:
+        easein_back 0.5 yoffset 0
+
+transform message_appear_icon():
+    zoom 0.0
+    easein_back 0.5 zoom 1.0
+
+
+transform message_narrator:
+    alpha 0.0
+    yoffset -50
+
+    parallel:
+        ease 0.5 alpha 1.0
+    parallel:
+        easein_back 0.5 yoffset 0
+
+transform phone_appear:
+    alpha 0.0
+    ease 0.8 alpha 1.0
+
+transform phone_slip(start,end):
+    ypos start
+    linear 0.5 ypos end
+
+
+screen chat_dialogue(dialogue, items=None):
+
+    window:
+        style "nvl_window"
+        background None
+        # Transform("images/bg/VM_BG01.png", xcenter=0.5,yalign=0.5)
+        vbox:
+            style "nvl_vbox"
+            xpos 250
+            null height 50
+            use nvl_chattext(dialogue)
+            null height 100
+
+screen nvl_chattext(dialogue):
+    style_prefix None
+    $ cnt_image = 0
+    for id_d, d in enumerate(dialogue):
+        vbox:
+            xsize 1400
+            yalign 1.0
+            yoffset -30
+            # spacing 10
+            frame:
+                background Frame("images/system/mailframe.png",0,0,0,0)
+                xsize 557
+                yminimum  238
+                if d.who == MC_Name:
+                    xalign 0.0
+                else:
+                    xalign 1.0
+
+                if d.current:
+                    if d.who == MC_Name:
+                        at message_appear(-1)
+                    else:
+                        at message_appear(1)
+
+                text d.what:
+                    pos (15,20)
+                    xsize 525
+                    slow_cps False
+                    color "#000"
+                    font gui.www_font
+                    size  40
+                    id d.what_id
 
 ################################################################################
 ## 移动设备界面

@@ -1,4 +1,4 @@
-#gui文件为更改UI
+﻿#gui文件为更改UI
 #options更改游戏基本设施
 #screen游戏界面设置
 #script为根目录
@@ -25,9 +25,19 @@
 # 游戏在此开始。
 #以下的BG都是早期暂定的背景，后续要改的话记得改下文件名
 #所有的音效什么的都没加，前面加了#号防止错误
-define h = Character("比企谷八幡")
-define l = Character("一色彩羽")
-define t = Character("比企谷小町")
+
+image end_pic:
+    "images/end_pic.png"
+    xoffset 5
+image black = "#000000"
+image white = "#FFFFFF"
+
+define h = Character("比企谷八幡", image='h', what_suffix="{image=end_pic}")
+image side h = "images/side HCM.png"
+define l = Character("一色彩羽", image='l', what_suffix="{image=end_pic}")
+image side l = "images/side IRO.png"
+define t = Character("比企谷小町", image='t', what_suffix="{image=end_pic}")
+image side t = "images/side KOM.png"
 
 transform shake:
     # 初始位置
@@ -66,7 +76,7 @@ label start:
         
     h "(尤其是，对于今天的惊喜派对的主角，一色彩羽。)"
     window hide
-    show cg04
+    show cg01
     with fade
     
     pause
