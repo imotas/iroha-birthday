@@ -50,9 +50,9 @@ transform shake:
     linear 0.08 xpos 0 ypos 0
 
 label start:
-
+    play music "audio/bgm/BGM1.mp3"
     scene gatemorning
-
+    play sound "audio/脚步.mp3"
     narrator "4月16日"
     #这段感觉可以黑屏开局，然后在倒数第三局的时候背景渐变出背景一色的立绘
     #imo:我设想的是，先展示总务高，然后跳出八幡的内心活动，会不会比黑屏好一点？
@@ -70,14 +70,12 @@ label start:
         (庆祝生日，更应该谨慎小心，更加自然地表现。)
 
         (因为关系亲密，在日常相处之中，微小的差异就可能产生不信任感。)"""
-
-    #此处建议使用iroha09、11、12————猪脑过载
-    #imo:这里插入CG好一点，找一张一色经典图
         
     h "(尤其是，对于今天的惊喜派对的主角，一色彩羽。)"
     window hide
     show cg01
-    with fade
+    play sound "audio/相机.mp3"
+    with dissolve
     
     pause
     
@@ -86,24 +84,22 @@ label start:
         (她是我们学校的学生会长，是足球部的经理，还是我们侍奉部的常客。)
 
         (顺便一提，她还有世界上最可爱的小恶魔的头衔。一个由砂糖、香辛料和某些美好的东西组成的可爱女孩。)"""
-        #最后一句应该有语音（大概），可以套进去
-        #这里要加一个黑屏渐变的过场，要不然衔接比较突兀
 
-    #Act1 Scene1
-    #BG03a
-    #这里是回忆，可以加回忆滤镜（白雾就行）
-    # ⚠待解决问题1
-
+    stop music
     scene activitymorning
-    with fade
+    play sound "audio/开门.mp3"
+    with hpunch
 
     show komachi02
+    voice "audio/log/k01.ogg"
     t "给你一个艰巨而又伟大的任务。"
     hide komachi02
+    voice "audio/log/h01.mp3"
     h "我这种渺小又平庸的人做不了艰巨又伟大的任务。"
+    play music "audio/bgm/BGM3.ogg"
     show komachi01
+    voice "audio/log/k02.mp3"
     t "哥哥不要贫嘴了，我们忙着给一色前辈准备惊喜呢。你要给我们争取时间，在我们准备完成之后把一色前辈带来活动室。"
-    #BG05
 
     scene corridor
     with fade
@@ -113,7 +109,6 @@ label start:
         最近“血压”、“尿酸值”、“健忘”、“半夜突然口渴”等等这些不健康的话题很受欢迎，但这样的话题即使是一色也不太可能说“太有道理了～”。
 
         嗯，还是像往常那样随意地聊些毫无意义的话题会比较自然吧……"""
-    #以上自言自语不知道怎么表达
 
     #Act1,Scene 2
     #BG02
@@ -122,11 +117,9 @@ label start:
     scene stuunion
     with fade
 
-    ##建议加一个敲门然后一色低头的立绘（iroha01），请进接抬头的立绘（iroha02），是前辈啊接失望的立绘（iroha04、07、08、18、19）————猪脑过载
-
     show iroha01
+    play sound "audio/敲门.mp3"
     h   "......"
-    #sound #敲门音效
     scene stuunion
     show iroha15
     l   "请进"
@@ -284,6 +277,7 @@ label start:
     show iroha11b
     l   "习惯了……原来如此。正是因为习惯了，所以做一些不同的事情可能会比较有新鲜感。"
     hide iroha11b
+    stop music
     #sound #手机提示音
     #这里可以给一个手机的界面，黑屏也可以，要表现出是手机的信息
     #imo:有类似素材，等我找找
@@ -296,8 +290,8 @@ label start:
     h   "啊，一色。差不多该……"
     scene stuunion
     show iroha03
-    l   "是啊。差不多该去部室了。大家还在等着吧？"#这里打断要怎么处理比较好
-        #imo:我觉得用bgm的转变来处理较好
+    play music "audio/bgm/BGM4.ogg"
+    l   "是啊。差不多该去部室了。大家还在等着吧？"
     hide iroha03
     h   "诶，什，什么？"
     show iroha07
@@ -369,6 +363,7 @@ label start:
     #BG06
 
     scene sky
+    play music "audio/bgm/BGM5.ogg"
     with fade
     "前往百元店的路上"
     
@@ -380,7 +375,9 @@ label start:
 
         （糟糕，这家伙真的很可爱啊，可爱到如果站在舞台上大喊我是各位的学园偶像——彩羽哟！也不会让人觉得不自然。）"""
     window hide
-    show iroha12 at shake
+    show iroha12
+    play sound "audio/开门.mp3"
+    with hpunch
     $ renpy.pause(2.0)
     window show
     show iroha12
