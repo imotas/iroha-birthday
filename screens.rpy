@@ -331,17 +331,29 @@ screen navigation():
 
         if main_menu:
 
-            textbutton _("开始游戏") action Start()
+            textbutton _("开始游戏") :
+                activate_sound "audio/button.mp3"
+                action Start() 
 
         else:
 
-            textbutton _("历史") action ShowMenu("history")
+            textbutton _("历史") :
+                activate_sound "audio/button.mp3"
+                action ShowMenu("history") 
 
-            textbutton _("保存") action ShowMenu("save")
+            textbutton _("保存"): 
+                activate_sound "audio/button.mp3"
+                action ShowMenu("save")
 
-        textbutton _("读取游戏") action ShowMenu("load")
+        textbutton _("读取游戏") :
+            
+            activate_sound "audio/button.mp3"
+            action ShowMenu("load")
 
-        textbutton _("设置") action ShowMenu("preferences")
+        textbutton _("设置") :
+            activate_sound "audio/button.mp3"
+            action ShowMenu("preferences")
+           
 
         if _in_replay:
 
@@ -555,7 +567,7 @@ screen about():
                 text i
             null height 30
             label "啦啦啦" text_size 45
-
+        ##这是啥，原来就有的吗？
     textbutton _("返回"):
         style "return_button"
         action Return()
@@ -732,43 +744,12 @@ style slot_button_text:
 ##
 ## https://www.renpy.cn/doc/screen_special.html#preferences
 
-screen preferences_extra():
-
-    tag menu
-
-    add "images/system/bg/settings_mainbg.png"
-
-    vbox:
-        xpos 540
-        ypos 263
-        style_prefix "radio"
-        label _("实验性功能")xsize 250
-        label "这些功能是移植版增加的" xsize 1200 text_style "preferences_extra_label"
-        textbutton _("显示‘攻略’页面") action ToggleVariable("persistent.enable_stragy") xsize 550 left_padding -3
-        textbutton _("显示‘好感度统计’页面") action ToggleVariable("persistent.enable_statistics") xsize 550 left_padding -3
-        textbutton _("沉默打破模式显示得分") action ToggleVariable("persistent.enable_chinmoku_score_count") xsize 550 left_padding -3
-        label "（该选项存在更新延迟，作出选择后无法立即看到分数变化）" xsize 1200 text_style "preferences_extra_label"
-        textbutton _("允许回退") action ToggleVariable("persistent.enable_rollback") xsize 550 left_padding -3
-        label "（使用鼠标滚轮、安卓的‘返回’操作或对话框上的按钮倒回上一条对话）" xsize 1200 text_style "preferences_extra_label"
-        label "（该选项重启后生效，回退功能有时候会出bug，请自行决定是否使用）" xsize 1200 text_style "preferences_extra_label"
-    textbutton _("返回"):
-        style "return_button"
-        action ShowMenu("preferences")
-
-style preferences_extra_label:
-    font gui.ui_text_font
-    size 35
-
 screen preferences():
 
     tag menu
 
     add "images/system/bg/settings_mainbg.png"
 
-    textbutton "实验性功能":
-        xpos 540
-        ypos 860
-        action ShowMenu("preferences_extra")
     vbox:
         xpos 540
         ypos 263
@@ -782,12 +763,6 @@ screen preferences():
                     label _("显示")
                     textbutton _("窗口") action Preference("display", "window")
                     textbutton _("全屏") action Preference("display", "fullscreen")
-
-            vbox:
-                style_prefix "radio"
-                label _("说话动画")xsize 250
-                textbutton _("启用") action SetVariable("persistent.disable_animation" , None) left_padding -3
-                textbutton _("禁用") action SetVariable("persistent.disable_animation" , True) left_padding -3
 
             vbox:
                 style_prefix "check"
@@ -1500,7 +1475,7 @@ style nvl_button_text:
     properties gui.button_text_properties("nvl_button")
 
 # 这是邮件模式的页面,参考了https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=62837%20上的代码(原作者已表明可以使用他的代码)
-
+#这是啥？-gklx
 
 
 transform phone_transform(pXalign=0.5, pYalign=0.5):

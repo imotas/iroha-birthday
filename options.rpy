@@ -29,7 +29,7 @@ define config.version = "1.0"
 
 define gui.about = _p("""
 """)
-
+## 前辈们不写咩-gklx
 
 ## 在构建的发布版中，可执行文件和目录所使用的短名称。此处仅限使用 ASCII 字符，并
 ## 且不能包含空格、冒号或分号。
@@ -57,14 +57,14 @@ define config.has_voice = True
 ## 将以下语句取消注释就可以设置标题界面播放的背景音乐文件。此文件将在整个游戏中
 ## 持续播放，直至音乐停止或其他文件开始播放。
 
-# define config.main_menu_music = "main-menu-theme.ogg"
-
+define config.main_menu_music = "audio/bgm/BGM0.ogg"
+## 这是不知道为什么失踪的menu菜单音乐语句，如果需要的话我放在这里
+## define config.game_menu_music = 
 
 ## 转场 ##########################################################################
 ##
 ## 这些变量用来控制某些事件发生时的转场。每一个变量都应设置成一个转场，或者是
 ## None 来表示无转场。
-
 ## 进入或退出游戏菜单。
 
 define config.enter_transition = dissolve
